@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "pfp-generator"
+version = "0.1.0"
+description = "Generate profile pictures."
+authors = ["trumully <truman.mulholland@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+pillow = "^10.3.0"
+
+[tool.poetry.scripts]
+pfp-generator = "pfp_generator.cli:main"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.1.1"
+hypothesis = {extras = ["cli"], version = "^6.100.1"}
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
