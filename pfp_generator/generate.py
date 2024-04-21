@@ -52,10 +52,7 @@ class ColorMatrix:
             Matrix: The pattern matrix.
         """
         return [
-            [
-                random.choices(self.color, self.color_weight, k=1)[0]
-                for _ in range(self.size)
-            ]
+            [*random.choices(self.color, self.color_weight, k=self.size)]
             for _ in range(self.size * 2)
         ]
 
