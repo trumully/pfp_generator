@@ -2,7 +2,9 @@
 
 import random
 from dataclasses import dataclass
-from typing import Any, Optional
+from typing import Any
+
+from pfp_generator.colors import RGB
 
 Matrix = list[list[Any]]
 
@@ -13,22 +15,22 @@ class ColorMatrix:
 
     Attributes:
         size (int): The size of the pattern.
-        color (list[str]): A list of colors to choose from.
+        color (list[RGB]): A list of colors to choose from.
                                         [base, color1, color2, ...]
         color_weight (list[float]): A list of weights for each color.
-        seed (Optional[str]): The seed for the random number generator.
+        seed (str): The seed for the random number generator.
 
     Raises:
         ValueError: If the length of color and color_weight is not the same.
 
     Returns:
-        list[list[int]]: A pattern for a profile picture.
+        Matrix: A pattern for a profile picture.
     """
 
     size: int
-    color: list[str]
+    color: list[RGB]
     color_weight: list[float]
-    seed: Optional[str] = None
+    seed: str
 
     def __post_init__(self) -> None:
         """Validate attributes
@@ -41,8 +43,7 @@ class ColorMatrix:
             raise ValueError("The length of color and color_weight must be the same")
         if sum(self.color_weight) <= 0:
             raise ValueError("The sum of color_weight must be greater than 0")
-        if self.seed is not None:
-            random.seed(self.seed)
+        random.seed(self.seed)
 
     def make_pattern(self) -> Matrix:
         """Make a pattern for a profile picture.

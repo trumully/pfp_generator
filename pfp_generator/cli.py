@@ -1,25 +1,28 @@
 """This module contains the CLI for the profile picture generator."""
 
 import argparse
-import random
+import time
 
-from PIL import ImageColor
-
+import pfp_generator.colors as colors
 from pfp_generator.display import display_pfp
 from pfp_generator.generate import ColorMatrix
 
 
-def get_random_color(bg_color: str) -> str:
-    """Get a random color that is not the background color.
+def clean_color(color: str, seed: str) -> colors.RGB:
+    """Sanitize the color string to a valid RGB color.
 
     Args:
-        bg_color (str): The background color.
+        color (str): The color string to sanitize.
 
     Returns:
-        str: A random color that is not the background color.
+        colors.RGB: The sanitized RGB color.
     """
-    colors = [c for c in list(ImageColor.colormap) if c != bg_color]
-    return random.choice(colors)
+    if not color:
+        return colors.generate_random_color(seed)
+    if colors.is_valid_color_name(color):
+        return colors.str_to_rgb(color)
+    if colors.is_valid_hex(color):
+        return colors.hex_to_rgb(color)
 
 
 def main() -> None:
@@ -48,7 +51,7 @@ def main() -> None:
         "-bg",
         "--background",
         type=str,
-        default="white",
+        default="",
         help="The color of the background.",
     )
     parser.add_argument(
@@ -72,18 +75,24 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    if args.text is not None:
-        random.seed(args.text)
-
-    args.color = args.color or get_random_color(args.background)
-
+    seed = args.text or str(time.time())
+    color_seed = seed[::-1]
     bg_weight = 1 - args.color_weight
+    bg = clean_color(args.background, color_seed)
+    c = clean_color(args.color, seed)
+
+    while colors.colors_too_similar(bg, c):
+        color_seed += seed
+        bg = clean_color(args.background, color_seed)
+        c = clean_color(args.color, seed)
+
     color_matrix = ColorMatrix(
         size=args.size,
-        color=[ImageColor.getrgb(args.background), ImageColor.getrgb(args.color)],
+        color=[bg, c],
         color_weight=[bg_weight, args.color_weight],
-        seed=args.text,
+        seed=seed,
     )
+
     display_pfp(color_matrix, save=args.save)
 
 
