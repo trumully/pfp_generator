@@ -119,7 +119,7 @@ def hex_to_rgb(hex_color: str) -> RGB:
         RGB: The RGB color.
     """
     hex_color = hex_color.lstrip("#")
-    return RGB(*(int(hex_color[i : i + 2]) for i in range(0, len(hex_color), 2)))
+    return RGB(*(int(hex_color[i : i + 2], 16) for i in range(0, len(hex_color), 2)))
 
 
 def is_valid_color_name(color: str) -> bool:
@@ -137,20 +137,8 @@ def is_valid_color_name(color: str) -> bool:
 def is_valid_hex(color: str) -> bool:
     """Check if a string is a valid hex color.
 
-    from answer @ https://stackoverflow.com/a/53330328
-    ^            // start of line
-    #            // literal pound sign, followed by
-    (?:          // either:
-      (?:          // a non-capturing group of:
-        [\da-f]{3}   // exactly 3 of: a single digit or a letter 'a'-'f'
-      ){1,2}       // repeated exactly 1 or 2 times
-    |            // or:
-      (?:          // a non-capturing group of:
-        [\da-f]{4}   // exactly 4 of: a single digit or a letter 'a'-'f'
-      ){1,2}       // repeated exactly 1 or 2 times
-    )
-    $            // end of line
-    i            // ignore case (let 'A'-'F' match 'a'-'f')
+    Uses regex to check if the string is a valid hex color.
+    Solution from https://stackoverflow.com/a/19282773
 
     Args:
         color (str): The color string to check.
@@ -158,8 +146,4 @@ def is_valid_hex(color: str) -> bool:
     Returns:
         bool: True if the string is a valid hex color, False otherwise.
     """
-    return bool(
-        re.match(
-            r"/^#(?:(?:[\da-f]{3}){1,2}|(?:[\da-f]{4}){1,2})$/i", color, re.IGNORECASE
-        )
-    )
+    return bool(re.match(r"^#?(?:(?:[0-9a-fA-F]{2}){3}|(?:[0-9a-fA-F]){3})$", color))

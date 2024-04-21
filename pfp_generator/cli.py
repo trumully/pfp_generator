@@ -21,6 +21,7 @@ def clean_color(color: str, seed: str) -> colors.RGB:
         return colors.generate_random_color(seed)
     if colors.is_valid_color_name(color):
         return colors.str_to_rgb(color)
+    color = "#" + color if not color.startswith("#") else color
     if colors.is_valid_hex(color):
         return colors.hex_to_rgb(color)
 
