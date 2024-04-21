@@ -25,13 +25,12 @@ def display_pfp(
     pattern_size = color_matrix.size * 2
     bg = color_matrix.color[0]
     image = Image.new("RGB", (pattern_size, pattern_size), bg.as_tuple())
-    pixels = image.load()
 
     for i, row in enumerate(pattern):
         for j, color in enumerate(row):
             if color == bg:
                 continue
-            pixels[j, i] = color.as_tuple()
+            image.putpixel((j, i), (color.as_tuple()))
 
     image = image.resize((size, size), Image.NEAREST)
     image.show()
