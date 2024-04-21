@@ -26,6 +26,10 @@ def clean_color(color: str, seed: str) -> colors.RGB:
         return colors.hex_to_rgb(color)
 
 
+def colorize_text(text: str, color: colors.RGB) -> str:
+    return f"\u001b[38;2;{color.r};{color.g};{color.b}m{text}\u001b[0m"
+
+
 def main() -> None:
     """The main function for the CLI."""
     parser = argparse.ArgumentParser(
@@ -95,7 +99,9 @@ def main() -> None:
         seed=seed,
     )
 
-    print(f"Seed: {seed}\nBackground: {bg}\nPrimary: {c}")
+    bg_str = colorize_text(f"Background: {bg}", bg)
+    c_str = colorize_text(f"Primary: {c}", c)
+    print(f"Seed: {seed}\n{bg_str}\n{c_str}\n")
 
     display_pfp(color_matrix, save=args.save)
 
