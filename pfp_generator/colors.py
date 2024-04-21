@@ -8,6 +8,7 @@ from math import sqrt
 from PIL import ImageColor
 
 COLOR_THRESHOLD: float = 152.96
+FALLBACK = "black"
 
 
 @dataclass(frozen=True, slots=True)
@@ -93,7 +94,7 @@ def colors_too_similar(color_a: RGB, color_b: RGB) -> bool:
     return color_distance(color_a, color_b) < COLOR_THRESHOLD
 
 
-def str_to_rgb(color: str, fallback: str = "black") -> RGB:
+def str_to_rgb(color: str) -> RGB:
     """Parse a color name to a valid RGB color.
 
     Args:
@@ -106,7 +107,7 @@ def str_to_rgb(color: str, fallback: str = "black") -> RGB:
     try:
         return RGB(*ImageColor.getrgb(color))
     except ValueError:
-        return RGB(*ImageColor.getrgb(fallback))
+        return RGB(*ImageColor.getrgb(FALLBACK))
 
 
 def hex_to_rgb(hex_color: str) -> RGB:
@@ -119,7 +120,11 @@ def hex_to_rgb(hex_color: str) -> RGB:
         RGB: The RGB color.
     """
     hex_color = hex_color.lstrip("#")
-    return RGB(*(int(hex_color[i : i + 2], 16) for i in range(0, len(hex_color), 2)))
+    try:
+        colors = (int(hex_color[i : i + 2], 16) for i in range(0, len(hex_color), 2))
+        return RGB(*colors)
+    except (ValueError, TypeError):
+        return RGB(*ImageColor.getrgb(FALLBACK))
 
 
 def is_valid_color_name(color: str) -> bool:
