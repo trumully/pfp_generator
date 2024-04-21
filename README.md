@@ -4,16 +4,16 @@ Generate a random profile picture based on given text!
 ## 🔎 Examples
 <table>
     <tr>
-        <th><img src="examples/truman.png" alt="truman"/ width="90%"></th>
-        <th><img src="examples/trumully.png" alt="trumully" width="90%"/></th>
-        <th><img src="examples/github.png" alt="github" width="90%"></th>
-        <th><img src="examples/python is awesome.png" alt="python is awesome" width="90%"></th>
+        <td><img src="examples/truman.png" alt="truman" width="100%" height="100%"></td>
+        <td><img src="examples/trumully.png" alt="trumully" width="100%" height="100%"></td>
+        <td><img src="examples/github.png" alt="github" width="100%" height="100%"></td>
+        <td><img src="examples/python is awesome.png" alt="python is awesome" width="100%" height="100%"></td>
     </tr>
-    <tr>
-        <th>truman</th>
-        <th>trumully</th>
-        <th>github</th>
-        <th>python is awesome</th>
+    <tr align="center">
+      <td width="25%">truman</td>
+      <td width="25%">trumully</td>
+      <td width="25%">github</td>
+      <td width="25%">python is awesome</td>
     </tr>
 </table>
 
