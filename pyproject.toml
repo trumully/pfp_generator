@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pfp-generator"
-version = "0.2.2"
+version = "0.2.3"
 description = "Generate profile pictures."
 authors = ["trumully <truman.mulholland@gmail.com>"]
 readme = "README.md"
