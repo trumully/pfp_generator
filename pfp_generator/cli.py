@@ -75,7 +75,7 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    seed = args.text or str(time.time())
+    seed = args.text or str(time.time()).replace(".", "")
     color_seed = seed[::-1]
     bg_weight = 1 - args.color_weight
     bg = clean_color(args.background, color_seed)
@@ -92,6 +92,8 @@ def main() -> None:
         color_weight=[bg_weight, args.color_weight],
         seed=seed,
     )
+
+    print(f"Seed: {seed}\nBackground: {bg}\nPrimary: {c}")
 
     display_pfp(color_matrix, save=args.save)
 

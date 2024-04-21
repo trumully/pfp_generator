@@ -32,6 +32,17 @@ class RGB:
         """
         return (self.r, self.g, self.b)
 
+    def as_hex(self) -> str:
+        """Convert the RGB values to a hex string.
+
+        Returns:
+            str: The RGB values as a hex string.
+        """
+        return "#{:02x}{:02x}{:02x}".format(self.r, self.g, self.b)
+
+    def __str__(self) -> str:
+        return " | ".join([str(x) for x in (self.as_tuple(), self.as_hex())])
+
 
 def generate_random_color(seed: str) -> RGB:
     """Generate a random color with a given seed.
@@ -147,4 +158,8 @@ def is_valid_hex(color: str) -> bool:
     Returns:
         bool: True if the string is a valid hex color, False otherwise.
     """
-    return bool(re.match(r"/^#(?:(?:[\da-f]{3}){1,2}|(?:[\da-f]{4}){1,2})$/i", color))
+    return bool(
+        re.match(
+            r"/^#(?:(?:[\da-f]{3}){1,2}|(?:[\da-f]{4}){1,2})$/i", color, re.IGNORECASE
+        )
+    )
