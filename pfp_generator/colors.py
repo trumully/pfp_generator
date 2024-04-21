@@ -94,6 +94,18 @@ def colors_too_similar(color_a: RGB, color_b: RGB) -> bool:
     return color_distance(color_a, color_b) < COLOR_THRESHOLD
 
 
+def flip_color(color: RGB) -> RGB:
+    """Flip the color by subtracting the RGB values from 255.
+
+    Args:
+        color (RGB): The color to flip.
+
+    Returns:
+        RGB: The flipped color.
+    """
+    return RGB(255 - color.r, 255 - color.g, 255 - color.b)
+
+
 def str_to_rgb(color: str) -> RGB:
     """Parse a color name to a valid RGB color.
 

@@ -87,9 +87,8 @@ def main() -> None:
     c = clean_color(args.color, seed)
 
     if not args.background and not args.color:
-        while colors.colors_too_similar(bg, c):
-            color_seed += seed
-            bg = clean_color(args.background, color_seed)
+        if colors.colors_too_similar(bg, c):
+            bg = colors.flip_color(bg)
             c = clean_color(args.color, seed)
 
     color_matrix = ColorMatrix(
