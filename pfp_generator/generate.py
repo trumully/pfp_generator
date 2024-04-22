@@ -21,7 +21,7 @@ def sha512(seed: str) -> int:
     return hash
 
 
-def convert_seed(seed: str | bytes | bytearray | int) -> int:
+def convert_seed(seed: str | bytes | bytearray) -> int:
     """Convert the seed to an integer if neeeded.
 
     Args:
@@ -30,8 +30,6 @@ def convert_seed(seed: str | bytes | bytearray | int) -> int:
     Returns:
         int: The converted seed.
     """
-    if isinstance(seed, int):
-        return seed
     seed = seed.encode() if isinstance(seed, str) else seed
     return sha512(seed)
 
@@ -70,8 +68,9 @@ class ColorMatrix:
             raise ValueError("The length of color and color_weight must be the same")
         if sum(self.color_weight) <= 0:
             raise ValueError("The sum of color_weight must be greater than 0")
-        self.seed = convert_seed(self.seed)
-        self.rng = np.random.default_rng(seed=self.seed)
+        if not isinstance(self.seed, int) and self.seed is not None:
+            self.seed = convert_seed(self.seed)
+        self.rng = np.random.default_rng(self.seed)
 
     def make_pattern(self) -> np.ndarray:
         """Make a pattern for a profile picture.
@@ -122,8 +121,7 @@ def batch_generate_pfp(color_matrices: list[ColorMatrix]) -> list[np.ndarray]:
     """Generate a list of profile picture patterns with a given list of color matrices.
 
     Args:
-        color_matrices (list[ColorMatrix]): A list of color matrices to generate the
-                                            patterns.
+        color_matrices (list[ColorMatrix]): A list of color matrices to generate the patterns.
 
     Returns:
         list[np.ndarray]: A list of generated pattern matrices.
