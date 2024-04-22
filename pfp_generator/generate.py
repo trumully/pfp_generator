@@ -71,7 +71,7 @@ class ColorMatrix:
         if not isinstance(self.seed, int) and self.seed is not None:
             seed = convert_seed(self.seed)
         else:
-            seed = self.seed
+            seed = int(self.seed)
         self.rng = np.random.default_rng(seed)
 
     def make_pattern(self) -> np.ndarray:
