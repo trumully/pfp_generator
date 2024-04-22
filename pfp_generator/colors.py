@@ -7,7 +7,7 @@ from math import sqrt
 
 from PIL import ImageColor
 
-COLOR_THRESHOLD: float = 152.96
+COLOR_THRESHOLD: float = 306  # 765 * 0.4
 FALLBACK = "black"
 
 

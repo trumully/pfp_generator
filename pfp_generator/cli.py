@@ -138,14 +138,12 @@ def main() -> None:
     seed = args.text or default_seed
     color_seed = int(str(seed)[::-1]) if seed == default_seed else seed[::-1]
 
-    bg, c = make_colors(args.background, args.color, [color_seed, seed])
-
     matrices = []
     for i in range(args.batches):
-        matrices.append(build_matrix(seed, args.size, args.color_weight, bg, c))
-        seed += str(i) if isinstance(seed, str) else int(i)
-        color_seed = seed[::-1] if isinstance(seed, str) else int(str(seed)[::-1])
         bg, c = make_colors(args.background, args.color, [color_seed, seed])
+        matrices.append(build_matrix(seed, args.size, args.color_weight, bg, c))
+        seed += str(i + 1) if isinstance(seed, str) else int(i + 1)
+        color_seed = seed[::-1] if isinstance(seed, str) else int(str(seed)[::-1])
 
     display_pfp(matrices, save=args.save)
 
