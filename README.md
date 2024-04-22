@@ -19,7 +19,7 @@ Generate a random profile picture based on given text!
 
 ## 🪄 Quick Start
 ```shell
-pfp-generator [-h] [-s SIZE] [-bg BACKGROUND] [-c COLOR] [-w COLOR_WEIGHT] [--save] [text]
+pfp-generator [-h] [-s <size>] [-bg <color>] [-c <color>] [-w COLOR_WEIGHT] [-b <amount>] [--save] [text]
 
 Generate profile pictures.
 
@@ -28,14 +28,17 @@ positional arguments:
 
 options:
   -h, --help            show this help message and exit
-  -s SIZE, --size SIZE  The size of the base pattern. Defaults to 5.
-  -bg BACKGROUND, --background BACKGROUND
+  -s <size>, --size <size>
+                        The size of the base pattern. Defaults to 5.
+  -bg <color>, --background <color>
                         The color of the background.
-  -c COLOR, --color COLOR
+  -c <color>, --color <color>
                         The color of the profile picture.
   -w COLOR_WEIGHT, --color-weight COLOR_WEIGHT
                         The weight of the profile picture color.
-  --save                Ask to save the profile picture.
+  -b <amount>, --batches <amount>
+                        The number of profile pictures to generate.
+  --save                Ask to save the file.
 ```
 
 ## 📦 Setting Up
