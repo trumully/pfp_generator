@@ -26,7 +26,25 @@ def clean_color(color: str, seed: str) -> colors.RGB:
         return colors.hex_to_rgb(color)
 
 
+def display_attributes(*text: str) -> None:
+    """Display the attributes of the profile picture.
+
+    Args:
+        text (str): The text to display.
+    """
+    print("\n".join(text))
+
+
 def colorize_text(text: str, color: colors.RGB) -> str:
+    """Colorize the text with the given color.
+
+    Args:
+        text (str): The text to colorize.
+        color (colors.RGB): The color to colorize the text with.
+
+    Returns:
+        str: The colorized text.
+    """
     return f"\u001b[38;2;{color.r};{color.g};{color.b}m{text}\u001b[0m"
 
 
@@ -98,10 +116,11 @@ def main() -> None:
         seed=seed,
     )
 
-    bg_str = colorize_text(f"Background: {bg}", bg)
-    c_str = colorize_text(f"Primary: {c}", c)
-    print(f"Seed: {seed}\n{bg_str}\n{c_str}\n")
-
+    display_attributes(
+        f"Seed: {seed}",
+        colorize_text(f"Background: {bg}", bg),
+        colorize_text(f"Primary: {c}", c),
+    )
     display_pfp(color_matrix, save=args.save)
 
 

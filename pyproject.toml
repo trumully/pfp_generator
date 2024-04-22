@@ -8,6 +8,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.12"
 pillow = "^10.3.0"
+numpy = "^1.26.4"
 
 [tool.poetry.scripts]
 pfp-generator = "pfp_generator.cli:main"
