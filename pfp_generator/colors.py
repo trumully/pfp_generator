@@ -41,6 +41,9 @@ class RGB:
         """
         return "#{:02x}{:02x}{:02x}".format(self.r, self.g, self.b)
 
+    def __eq__(self, other: "RGB") -> bool:
+        return self.as_tuple() == other.as_tuple()
+
     def __str__(self) -> str:
         return " | ".join([str(x) for x in (self.as_tuple(), self.as_hex())])
 

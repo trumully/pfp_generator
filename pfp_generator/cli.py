@@ -117,6 +117,7 @@ def main() -> None:
         "--color-weight",
         type=float,
         default=0.35,
+        metavar="<weight>",
         help="The weight of the profile picture color.",
     )
     parser.add_argument(
@@ -137,6 +138,9 @@ def main() -> None:
     default_seed = int(str(time.time()).replace(".", ""))
     seed = args.text or default_seed
     color_seed = int(str(seed)[::-1]) if seed == default_seed else seed[::-1]
+
+    if color_seed == seed:
+        color_seed = seed + 1 if isinstance(seed, int) else seed + "1"
 
     print("Seed:", seed)
 
