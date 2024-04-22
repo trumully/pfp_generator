@@ -26,6 +26,18 @@ def clean_color(color: str, seed: str) -> colors.RGB:
         return colors.hex_to_rgb(color)
 
 
+def clean_seed(seed: str) -> str | int:
+    """Clean the seed to a valid seed.
+
+    Args:
+        seed (str): The seed to clean.
+
+    Returns:
+        str | int: The cleaned seed.
+    """
+    return int(seed) if seed.isnumeric() else seed
+
+
 def colorize_text(text: str, color: colors.RGB) -> str:
     """Colorize the text with the given color.
 
@@ -52,8 +64,8 @@ def make_colors(
     Returns:
         tuple[colors.RGB, colors.RGB]: The background and color for the profile picture.
     """
-    bg = clean_color(bg, seeds[1])
     c = clean_color(c, seeds[0])
+    bg = clean_color(bg, seeds[1])
 
     if (not bg and not c) and colors.colors_too_similar(bg, c):
         bg = colors.flip_color(bg)
@@ -135,9 +147,9 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    default_seed = int(str(time.time()).replace(".", ""))
-    seed = args.text or default_seed
-    color_seed = int(str(seed)[::-1]) if seed == default_seed else seed[::-1]
+    default_seed: int | str = clean_seed(str(time.time()).replace(".", ""))
+    seed: int | str = clean_seed(args.text) if args.text else default_seed
+    color_seed: int | str = clean_seed(str(seed)[::-1])
 
     if color_seed == seed:
         color_seed = seed + 1 if isinstance(seed, int) else seed + "1"
@@ -148,8 +160,9 @@ def main() -> None:
     for i in range(args.batches):
         bg, c = make_colors(args.background, args.color, [color_seed, seed])
         matrices.append(build_matrix(seed, args.size, args.color_weight, bg, c))
-        seed += str(i + 1) if isinstance(seed, str) else int(i + 1)
-        color_seed = seed[::-1] if isinstance(seed, str) else int(str(seed)[::-1])
+        if i < args.batches - 1:
+            seed = clean_seed(str(seed) + str(i + 1))
+            color_seed = clean_seed(str(seed)[::-1])
 
     display_pfp(matrices, save=args.save)
 
