@@ -69,8 +69,10 @@ class ColorMatrix:
         if sum(self.color_weight) <= 0:
             raise ValueError("The sum of color_weight must be greater than 0")
         if not isinstance(self.seed, int) and self.seed is not None:
-            self.seed = convert_seed(self.seed)
-        self.rng = np.random.default_rng(self.seed)
+            seed = convert_seed(self.seed)
+        else:
+            seed = self.seed
+        self.rng = np.random.default_rng(seed)
 
     def make_pattern(self) -> np.ndarray:
         """Make a pattern for a profile picture.
