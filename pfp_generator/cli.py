@@ -138,6 +138,8 @@ def main() -> None:
     seed = args.text or default_seed
     color_seed = int(str(seed)[::-1]) if seed == default_seed else seed[::-1]
 
+    print("Seed:", seed)
+
     matrices = []
     for i in range(args.batches):
         bg, c = make_colors(args.background, args.color, [color_seed, seed])
