@@ -5,6 +5,8 @@ from pathlib import Path
 from PIL import Image
 
 from pfp_generator.generate import ColorMatrix, batch_generate_pfp, generate_pfp
+from pfp_generator.image_to_ascii import image_to_ascii
+
 
 IMAGES_PER_ROW: int = 5
 SAVE_PATH: Path = Path(Path("~").expanduser(), ".cache", "pfp-generator")
@@ -16,13 +18,16 @@ def display_pfp(
     *,
     size: int = 256,
     save: bool = False,
-) -> None:
+) -> str:
     """Display a profile picture pattern with a given color matrix.
 
     Args:
         matrices (list[ColorMatrix]): The color matrices for the profile pictures.
         size (int): The size of the profile picture. Defaults to 256.
         save (bool): A flag to save the profile picture. Defaults to False.
+
+    Returns:
+        str: The ASCII representation of the profile picture.
     """
     pattern = [generate_pfp(matrices[0])]
     name = str(matrices[0].seed)
@@ -52,13 +57,18 @@ def display_pfp(
     collage.show()
 
     if cache_exceeded():
-        return print(
+        print(
             f"Cache limit reached! If you want to save more images, please clear the "
             f"cache @ {SAVE_PATH}"
         )
-
-    if save:
+    elif save:
         save_file(images, name)
+
+    return image_to_ascii(
+        images[0],
+        pattern[0],
+        num_columns=20,
+    )
 
 
 def cache_exceeded() -> bool:

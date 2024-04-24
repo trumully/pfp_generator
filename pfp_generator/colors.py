@@ -167,3 +167,16 @@ def is_valid_hex(color: str) -> bool:
         bool: True if the string is a valid hex color, False otherwise.
     """
     return bool(re.match(r"^#?(?:(?:[0-9a-fA-F]{2}){3}|(?:[0-9a-fA-F]){3})$", color))
+
+
+def colorize_text(text: str, color: RGB) -> str:
+    """Colorize the text with the given color.
+
+    Args:
+        text (str): The text to colorize.
+        color (RGB): The color to colorize the text with.
+
+    Returns:
+        str: The colorized text.
+    """
+    return f"\u001b[38;2;{color.r};{color.g};{color.b}m{text}\u001b[0m"
