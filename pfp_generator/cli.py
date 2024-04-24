@@ -8,6 +8,9 @@ from pfp_generator.display import display_pfp
 from pfp_generator.generate import ColorMatrix
 
 
+MAX_PATTERN_SIZE: int = 100
+
+
 def clean_color(color: str, seed: str) -> colors.RGB:
     """Sanitize the color string to a valid RGB color.
 
@@ -96,8 +99,7 @@ def main() -> None:
         type=str,
         nargs="?",
         default=None,
-        help="Text to generate the profile picture from. If left blank, generate a "
-        "random profile picture.",
+        help="Text to generate from. Random text is used if not provided.",
     )
 
     parser.add_argument(
@@ -146,6 +148,9 @@ def main() -> None:
         help="Ask to save the file.",
     )
     args = parser.parse_args()
+
+    if args.size >= MAX_PATTERN_SIZE:
+        return print(f"Pattern size must be less than {MAX_PATTERN_SIZE}!")
 
     default_seed: int | str = clean_seed(str(time.time()).replace(".", ""))
     seed: int | str = clean_seed(args.text) if args.text else default_seed
