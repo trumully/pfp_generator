@@ -6,9 +6,9 @@ from PIL import Image
 
 from pfp_generator.generate import ColorMatrix, batch_generate_pfp, generate_pfp
 
-PER_ROW: int = 5
+IMAGES_PER_ROW: int = 5
 SAVE_PATH: Path = Path(Path("~").expanduser(), ".cache", "pfp-generator")
-CACHE_LIMIT: int = 5  # MB
+CACHE_LIMIT: int = 5  # in MB
 
 
 def display_pfp(
@@ -30,8 +30,8 @@ def display_pfp(
     pattern.extend(batch_generate_pfp(matrices[1:]))
 
     num_images = len(pattern)
-    num_rows = (num_images + PER_ROW - 1) // PER_ROW
-    num_cols = min(num_images, PER_ROW)
+    num_rows = (num_images + IMAGES_PER_ROW - 1) // IMAGES_PER_ROW
+    num_cols = min(num_images, IMAGES_PER_ROW)
 
     collage_width, collage_height = size * num_cols, size * num_rows
 
@@ -46,7 +46,7 @@ def display_pfp(
             .resize((size, size), Image.NEAREST)
         )
         images.append(image)
-        row, col = divmod(i, PER_ROW)
+        row, col = divmod(i, IMAGES_PER_ROW)
         collage.paste(image, (col * size, row * size))
 
     collage.show()
@@ -90,8 +90,7 @@ def save_file(images: list[Image.Image], name: str) -> None:
         images (list[Image.Image]): The images to save.
         name (str): The name of the image.
     """
-    save_dir = Path(SAVE_PATH, name)
-    if not Path.exists(save_dir):
+    if not Path.exists((save_dir := Path(SAVE_PATH, name))):
         Path.mkdir(save_dir, parents=True)
 
     for i, image in enumerate(images, start=1):
@@ -100,8 +99,8 @@ def save_file(images: list[Image.Image], name: str) -> None:
                 f"Cache limit reached! If you want to save more images, please clear "
                 f"the cache @ {SAVE_PATH}"
             )
-        filename = Path(save_dir, f"{name}_{i}.png")
-        if not Path.exists(filename):
+
+        if not Path.exists((filename := Path(save_dir, f"{name}_{i}.png"))):
             image.save(filename)
 
     print(f"Profile pictures saved to {Path(SAVE_PATH, name)}")

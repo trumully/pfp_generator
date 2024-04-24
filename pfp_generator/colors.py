@@ -8,7 +8,7 @@ from math import sqrt
 from PIL import ImageColor
 
 COLOR_THRESHOLD: float = 306  # 765 * 0.4
-FALLBACK = "black"
+FALLBACK_COLOR = "black"
 
 
 @dataclass(frozen=True, slots=True)
@@ -39,7 +39,7 @@ class RGB:
         Returns:
             str: The RGB values as a hex string.
         """
-        return "#{:02x}{:02x}{:02x}".format(self.r, self.g, self.b)
+        return f"#{self.r:02x}{self.g:02x}{self.b:02x}"
 
     def __eq__(self, other: "RGB") -> bool:
         return self.as_tuple() == other.as_tuple()
@@ -80,7 +80,7 @@ def color_distance(color_a: RGB, color_b: RGB) -> float:
     b: int = color_a.b - color_b.b
 
     return sqrt(
-        (((512 + r_mean) * r * r) >> 8) + 4 * g * g + (((767 - r_mean) * b * b) >> 8)
+        (2 + (r_mean / 256)) * r**2 + 4 * g**2 + (2 + (255 - r_mean) / 256) * b**2
     )
 
 
@@ -122,7 +122,7 @@ def str_to_rgb(color: str) -> RGB:
     try:
         return RGB(*ImageColor.getrgb(color))
     except ValueError:
-        return RGB(*ImageColor.getrgb(FALLBACK))
+        return RGB(*ImageColor.getrgb(FALLBACK_COLOR))
 
 
 def hex_to_rgb(hex_color: str) -> RGB:
@@ -139,7 +139,7 @@ def hex_to_rgb(hex_color: str) -> RGB:
         colors = (int(hex_color[i : i + 2], 16) for i in range(0, len(hex_color), 2))
         return RGB(*colors)
     except (ValueError, TypeError):
-        return RGB(*ImageColor.getrgb(FALLBACK))
+        return RGB(*ImageColor.getrgb(FALLBACK_COLOR))
 
 
 def is_valid_color_name(color: str) -> bool:

@@ -58,3 +58,13 @@ def test_fuzz_is_valid_hex(color: str) -> None:
 @given(color=st.text())
 def test_fuzz_str_to_rgb(color: str) -> None:
     pfp_generator.colors.str_to_rgb(color=color)
+
+
+@given(r=rgb_values, g=rgb_values, b=rgb_values)
+def test_fuzz_flip_color(r: int, g: int, b: int) -> None:
+    old_color = pfp_generator.colors.RGB(r=r, g=g, b=b)
+    new_color = pfp_generator.colors.flip_color(color=old_color)
+
+    assert new_color.r == 255 - old_color.r
+    assert new_color.g == 255 - old_color.g
+    assert new_color.b == 255 - old_color.b
