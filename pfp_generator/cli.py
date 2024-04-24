@@ -41,19 +41,6 @@ def clean_seed(seed: str) -> str | int:
     return int(seed) if seed.isnumeric() else seed
 
 
-def colorize_text(text: str, color: colors.RGB) -> str:
-    """Colorize the text with the given color.
-
-    Args:
-        text (str): The text to colorize.
-        color (colors.RGB): The color to colorize the text with.
-
-    Returns:
-        str: The colorized text.
-    """
-    return f"\u001b[38;2;{color.r};{color.g};{color.b}m{text}\u001b[0m"
-
-
 def make_colors(
     bg: colors.RGB, c: colors.RGB, seeds: list[str | int]
 ) -> tuple[colors.RGB, colors.RGB]:
@@ -159,7 +146,7 @@ def main() -> None:
     if color_seed == seed:
         color_seed = seed + 1 if isinstance(seed, int) else seed + "1"
 
-    print("Seed:", seed)
+    seed_to_print = seed
 
     matrices = []
     for i in range(args.batches):
@@ -169,7 +156,8 @@ def main() -> None:
             seed = clean_seed(str(seed) + str(i + 1))
             color_seed = clean_seed(str(seed)[::-1])
 
-    display_pfp(matrices, save=args.save)
+    print(display_pfp(matrices, save=args.save))
+    print(f"Seed: {seed_to_print}")
 
 
 if __name__ == "__main__":
