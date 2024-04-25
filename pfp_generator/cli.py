@@ -134,6 +134,11 @@ def main() -> None:
         action="store_true",
         help="Ask to save the file.",
     )
+    parser.add_argument(
+        "--ascii",
+        action="store_true",
+        help="Display the ASCII representation of the profile picture.",
+    )
     args = parser.parse_args()
 
     if args.size >= MAX_PATTERN_SIZE:
@@ -156,7 +161,7 @@ def main() -> None:
             seed = clean_seed(str(seed) + str(i + 1))
             color_seed = clean_seed(str(seed)[::-1])
 
-    print(display_pfp(matrices, save=args.save))
+    display_pfp(matrices, save=args.save, ascii=args.ascii)
     print(f"Seed: {seed_to_print}")
 
 

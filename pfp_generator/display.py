@@ -18,16 +18,15 @@ def display_pfp(
     *,
     size: int = 256,
     save: bool = False,
-) -> str:
+    ascii: bool = False,
+) -> None:
     """Display a profile picture pattern with a given color matrix.
 
     Args:
         matrices (list[ColorMatrix]): The color matrices for the profile pictures.
         size (int): The size of the profile picture. Defaults to 256.
         save (bool): A flag to save the profile picture. Defaults to False.
-
-    Returns:
-        str: The ASCII representation of the profile picture.
+        ascii (bool): A flag to display the ASCII representation of the profile picture.
     """
     pattern = [generate_pfp(matrices[0])]
     name = str(matrices[0].seed)
@@ -64,11 +63,8 @@ def display_pfp(
     elif save:
         save_file(images, name)
 
-    return image_to_ascii(
-        images[0],
-        pattern[0],
-        num_columns=20,
-    )
+    if ascii:
+        print(image_to_ascii(images[0], num_columns=50, contrast=1.5))
 
 
 def cache_exceeded() -> bool:

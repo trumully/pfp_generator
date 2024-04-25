@@ -18,7 +18,7 @@ class AsciiType(Enum):
     """
 
     SIMPLE = "@%#*+=-:. "
-    BARS = "█▓▒░ "
+    BARS = "█"
     COMPLEX = (
         '$@B%8&WM#*zcvunxrjft/\\|()1{}[]?-_+~<>i!lI;;::,,,"""^^^'
         "`````'''''.......     "
@@ -76,8 +76,23 @@ def grayscale_image(image: Image) -> np.array:
     return cv2.cvtColor(np.array(image), cv2.COLOR_BGR2GRAY)
 
 
+def get_start_and_end_indices(a: int, b: int, c: int) -> slice:
+    """Get the start and end indices of a slice for a given cell.
+
+    Args:
+        a (int): The index of the cell.
+        b (int): The width or height of the cell.
+        c (int): The width or height of the image.
+
+    Returns:
+        slice: The start and end indices of the slice.
+    """
+    return slice(int(a * b), min(int((a + 1) * b), c))
+
+
 def determine_ascii_character(
-    image: np.ndarray,
+    grayscale_image: np.ndarray,
+    colored_image: np.ndarray,
     row: int,
     column: int,
     cell_width: int,
@@ -85,11 +100,12 @@ def determine_ascii_character(
     width: int,
     height: int,
     num_chars: int,
-) -> int:
+) -> tuple[int, RGB]:
     """Determine the ASCII character for a given cell.
 
     Args:
-        image (np.ndarray): The image.
+        grayscaled_image (np.ndarray): The image grayscaled.
+        colored_image (np.ndarray): The image colored.
         cell_width (int): The width of the cell.
         cell_height (int): The height of the cell.
         width (int): The width of the image.
@@ -98,46 +114,44 @@ def determine_ascii_character(
 
     Returns:
         int: The index of the ASCII character.
+        RGB: The RGB color of the ASCII character.
     """
-    return min(
-        int(
-            np.mean(
-                image[
-                    int(row * cell_height) : min(int((row + 1) * cell_height), height),
-                    int(column * cell_width) : min(
-                        int((column + 1) * cell_width), width
-                    ),
-                ]
-            )
-            * num_chars
-            / 255
-        ),
+    row_slice = get_start_and_end_indices(row, cell_height, height)
+    column_slice = get_start_and_end_indices(column, cell_width, width)
+    index = min(
+        int(np.mean(grayscale_image[row_slice, column_slice]) * num_chars / 255),
         num_chars - 1,
     )
+    rgb_color = tuple(
+        map(int, np.mean(colored_image[row_slice, column_slice], axis=(0, 1)))
+    )
+
+    return index, RGB(*rgb_color)
 
 
 def image_to_ascii(
     image: Image,
-    image_as_array: np.ndarray,
     num_columns: int = 100,
     ascii_mode: AsciiType = AsciiType.BARS,
-    brightness: Optional[int] = None,
-    contrast: Optional[int] = None,
+    brightness: Optional[float] = None,
+    contrast: Optional[float] = None,
 ) -> str:
     """Convert an image to ASCII art.
 
     Args:
-        path (Path): The path to the image.
+        image (Image): The image to be converted to ASCII art.
         num_columns (int, optional): The number of columns. Defaults to 100.
         ascii_mode (AsciiType, optional): The character set to use.
                                           Defaults to AsciiType.BARS.
-        brightness (Optional[int], optional): Brightness value. Defaults to None.
-        contrast (Optional[int], optional): Amount of contrast. Defaults to None.
+        brightness (Optional[float], optional): Brightness value. Defaults to None.
+        contrast (Optional[float], optional): Amount of contrast. Defaults to None.
 
     Returns:
         str: The ascii art.
     """
     num_chars = len(ascii_mode.value)
+
+    image_as_array: np.ndarray = np.array(image)
 
     grayscaled_image: np.ndarray = grayscale_image(
         enhance_image(image, brightness, contrast)
@@ -150,19 +164,18 @@ def image_to_ascii(
     output_str = ""
     for i in range(num_rows):
         for j in range(num_columns):
-            cell = ascii_mode.value[
-                determine_ascii_character(
-                    grayscaled_image,
-                    i,
-                    j,
-                    cell_width,
-                    cell_height,
-                    width,
-                    height,
-                    num_chars,
-                )
-            ]
-            output_str += colorize_text(cell, RGB(*image_as_array[i, j // 2]))
+            index, color = determine_ascii_character(
+                grayscaled_image,
+                image_as_array,
+                i,
+                j,
+                cell_width,
+                cell_height,
+                width,
+                height,
+                num_chars,
+            )
+            output_str += colorize_text(ascii_mode.value[index], color)
         if i < num_rows - 1:
             output_str += "\n"
     return output_str
