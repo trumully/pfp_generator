@@ -19,7 +19,7 @@ Generate a random profile picture based on given text!
 
 ## 🪄 Quick Start
 ```shell
-pfp-generator [-h] [-s <size>] [-bg <color>] [-c <color>] [-w <weight>] [-b <amount>] [--save] [text]
+pfp-generator [-h] [-s <size>] [-bg <color>] [-c <color>] [-w <weight>] [-b <amount>] [--save] [--ascii] [text]
 
 Generate profile pictures.
 
@@ -39,6 +39,7 @@ options:
   -b <amount>, --batches <amount>
                         The number of profile pictures to generate.
   --save                Ask to save the file.
+  --ascii               Display the ASCII representation of the profile picture.
 ```
 
 ## 📦 Setting Up
