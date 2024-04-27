@@ -7,26 +7,25 @@ import pfp_generator.colors as colors
 from pfp_generator.display import display_pfp
 from pfp_generator.generate import ColorMatrix
 
-
 MAX_PATTERN_SIZE: int = 100
 
 
-def clean_color(color: str, seed: str) -> colors.RGB:
+def clean_color(color: str, seed: str | int) -> colors.RGB:
     """Sanitize the color string to a valid RGB color.
 
     Args:
         color (str): The color string to sanitize.
+        seed (str | int): The seed for the random number generator.
 
     Returns:
         colors.RGB: The sanitized RGB color.
     """
-    if not color:
-        return colors.generate_random_color(seed)
     if colors.is_valid_color_name(color):
         return colors.str_to_rgb(color)
     color = "#" + color if not color.startswith("#") else color
     if colors.is_valid_hex(color):
         return colors.hex_to_rgb(color)
+    return colors.generate_random_color(seed)
 
 
 def clean_seed(seed: str) -> str | int:
@@ -38,30 +37,30 @@ def clean_seed(seed: str) -> str | int:
     Returns:
         str | int: The cleaned seed.
     """
-    return int(seed) if seed.isnumeric() else seed
+    return int(seed) if seed.isnumeric() else str(seed)
 
 
 def make_colors(
-    bg: colors.RGB, c: colors.RGB, seeds: list[str | int]
+    bg: str, c: str, seeds: list[str | int]
 ) -> tuple[colors.RGB, colors.RGB]:
     """Make the background and color for the profile picture.
 
     Args:
-        bg (colors.RGB): The background color.
-        c (colors.RGB): The color.
-        seeds (list[str  |  int]): The seeds for the random number generator.
+        bg (str): The background color.
+        c (str): The color.
+        seeds (list[str | int]): The seeds for the random number generator.
 
     Returns:
         tuple[colors.RGB, colors.RGB]: The background and color for the profile picture.
     """
-    c = clean_color(c, seeds[0])
-    bg = clean_color(bg, seeds[1])
+    c_to_rgb = clean_color(c, seeds[0])
+    bg_to_rgb = clean_color(bg, seeds[1])
 
-    if (not bg and not c) and colors.colors_too_similar(bg, c):
-        bg = colors.flip_color(bg)
-        c = clean_color(c, seeds[0])
+    if (not bg and not c) and colors.colors_too_similar(c_to_rgb, bg_to_rgb):
+        c_to_rgb = clean_color(c, seeds[0])
+        bg_to_rgb = colors.flip_color(bg_to_rgb)
 
-    return bg, c
+    return bg_to_rgb, c_to_rgb
 
 
 def build_matrix(
@@ -144,9 +143,9 @@ def main() -> None:
     if args.size >= MAX_PATTERN_SIZE:
         return print(f"Pattern size must be less than {MAX_PATTERN_SIZE}!")
 
-    default_seed: int | str = clean_seed(str(time.time()).replace(".", ""))
-    seed: int | str = clean_seed(args.text) if args.text else default_seed
-    color_seed: int | str = clean_seed(str(seed)[::-1])
+    default_seed = clean_seed(str(time.time()).replace(".", ""))
+    seed = clean_seed(args.text) if args.text else default_seed
+    color_seed = clean_seed(str(seed)[::-1])
 
     if color_seed == seed:
         color_seed = seed + 1 if isinstance(seed, int) else seed + "1"

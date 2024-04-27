@@ -41,18 +41,20 @@ class RGB:
         """
         return f"#{self.r:02x}{self.g:02x}{self.b:02x}"
 
-    def __eq__(self, other: "RGB") -> bool:
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, RGB):
+            return False
         return self.as_tuple() == other.as_tuple()
 
     def __str__(self) -> str:
         return " | ".join([str(x) for x in (self.as_tuple(), self.as_hex())])
 
 
-def generate_random_color(seed: str) -> RGB:
+def generate_random_color(seed: str | int) -> RGB:
     """Generate a random color with a given seed.
 
     Args:
-        seed (str): The seed for the random number generator.
+        seed (str | int): The seed for the random number generator.
 
     Returns:
         RGB: The generated random color.

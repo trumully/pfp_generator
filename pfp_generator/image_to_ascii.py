@@ -37,15 +37,17 @@ def get_sizes(image: np.ndarray, num_columns: int) -> tuple[int, ...]:
                         num_rows of the image.
     """
     height, width = image.shape
-    cell_width = width / num_columns
+    cell_width = width // num_columns
     cell_height = 2 * cell_width
     num_rows = round(height / cell_height)
     return width, height, cell_width, cell_height, num_rows
 
 
 def enhance_image(
-    image: Image, brightness: Optional[int] = None, contrast: Optional[int] = None
-) -> Image:
+    image: Image.Image,
+    brightness: Optional[float] = None,
+    contrast: Optional[float] = None,
+) -> Image.Image:
     """With a given image, enhance the brightness and contrast if provided.
 
     Args:
@@ -64,7 +66,7 @@ def enhance_image(
     return image
 
 
-def grayscale_image(image: Image) -> np.array:
+def grayscale_image(image: Image.Image) -> np.ndarray:
     """Convert an image to grayscale.
 
     Args:
@@ -130,7 +132,7 @@ def determine_ascii_character(
 
 
 def image_to_ascii(
-    image: Image,
+    image: Image.Image,
     num_columns: int = 100,
     ascii_mode: AsciiType = AsciiType.BARS,
     brightness: Optional[float] = None,

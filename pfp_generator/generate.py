@@ -2,18 +2,17 @@
 
 import hashlib
 from dataclasses import dataclass, field
-from typing import Optional
 
 import numpy as np
 
 from pfp_generator.colors import RGB
 
 
-def sha512(seed: str) -> int:
+def sha512(seed: bytes | bytearray) -> int:
     """Create a SHA-512 hash from a given seed.
 
     Args:
-        text (str): The seed to hash.
+        seed (bytes | bytearray): The seed to hash.
 
     Returns:
         int: The hash value.
@@ -52,8 +51,10 @@ class ColorMatrix:
     size: int
     color: list[RGB]
     color_weight: list[float]
-    seed: str
-    rng: Optional[np.random.Generator] = field(init=False, repr=False, default=None)
+    seed: int | str | bytes | bytearray
+    rng: np.random.Generator = field(
+        init=False, repr=False, default=np.random.default_rng()
+    )
 
     def __post_init__(self) -> None:
         """Validate attributes
@@ -67,8 +68,11 @@ class ColorMatrix:
         if sum(self.color_weight) <= 0:
             raise ValueError("The sum of color_weight must be greater than 0")
 
-        seed = convert_seed(self.seed) if self.seed_is_byte_like() else int(self.seed)
-        self.rng = np.random.default_rng(seed)
+        if isinstance(self.seed, int):
+            _seed = int(self.seed)
+        elif self.seed_is_byte_like():
+            _seed = convert_seed(self.seed)
+        self.rng = np.random.default_rng(_seed)
 
     @property
     def width(self) -> int:
@@ -95,7 +99,9 @@ class ColorMatrix:
             np.ndarray: The pattern matrix.
         """
         return self.rng.choice(
-            self.color, (self.height, self.width), p=self.color_weight
+            a=np.array(self.color),
+            size=(self.height, self.width),
+            p=self.color_weight,
         )
 
     def reflect_pattern(self, pattern: np.ndarray) -> np.ndarray:

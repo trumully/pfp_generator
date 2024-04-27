@@ -7,7 +7,6 @@ from PIL import Image
 from pfp_generator.generate import ColorMatrix, batch_generate_pfp, generate_pfp
 from pfp_generator.image_to_ascii import image_to_ascii
 
-
 IMAGES_PER_ROW: int = 5
 SAVE_PATH: Path = Path(Path("~").expanduser(), ".cache", "pfp-generator")
 CACHE_LIMIT: int = 5  # in MB
@@ -47,7 +46,7 @@ def display_pfp(
         image = (
             Image.fromarray(p.astype("uint8"))
             .convert("RGB")
-            .resize((size, size), Image.NEAREST)
+            .resize((size, size), Image.Resampling.NEAREST)
         )
         images.append(image)
         row, col = divmod(i, IMAGES_PER_ROW)
@@ -76,14 +75,14 @@ def cache_exceeded() -> bool:
     return get_dir_size(SAVE_PATH) >= CACHE_LIMIT
 
 
-def get_dir_size(directory: Path) -> int:
+def get_dir_size(directory: Path) -> float:
     """Get the size of a directory and its subdirectories in MB.
 
     Args:
         directory (Path): The directory to get the size of.
 
     Returns:
-        int: The size of the directory in bytes.
+        float: The size of the directory in MB.
     """
     size_bytes = sum(f.stat().st_size for f in directory.glob("**/*") if f.is_file())
     return size_bytes / 1024 / 1024
