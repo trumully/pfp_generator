@@ -4,6 +4,7 @@ version = "0.5.0"
 description = "Generate profile pictures."
 authors = ["trumully <truman.mulholland@gmail.com>"]
 readme = "README.md"
+license = "UNLICENSE"
 
 [tool.poetry.dependencies]
 python = "^3.12"
